@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#define SIZE 50
+#define SIZE 1000
 
 int *init_long(int from) {
 
@@ -80,6 +80,8 @@ int *multiply(int *a, int *b) {
 
     for(i = 1; i <= a[0]; i++) {
         for( j = 1; j <= b[0]; j++ ) {
+            //printf("m %d x %d reminder at start %d\n", a[i], b[j], rem);
+
             tmp_res = (a[i] * b[j]) + rem;
 
             if (tmp_res > 9) {
@@ -87,18 +89,18 @@ int *multiply(int *a, int *b) {
             } else {
                 rem = 0;
             }
-            printf("tmp_res %d, rem %d\n", tmp_res, rem);
+            //printf("tmp_res %d, rem %d\n", tmp_res, rem);
  
             if (res[i + j - 1]) {
-                tmp_add = res[i + j - 1] + tmp_res + rem;
+                tmp_add = res[i + j - 1] + (tmp_res % 10);
                 if (tmp_add > 9) {
-                    rem = tmp_add / 10;
+                    rem += tmp_add / 10;
                 }
-                printf("Writing %d rem %d\n", tmp_add % 10, rem);
-                res[i + j] = tmp_add % 10;
+                // printf("Writing here %d rem %d\n", tmp_add % 10, rem);
+                res[i + j - 1] = tmp_add % 10;
                 
             } else {
-                printf("Writing %d rem %d\n", tmp_res % 10,  rem);
+                //printf("Writing there %d rem %d\n", tmp_res % 10,  rem);
                 res[i + j - 1] = tmp_res % 10;
                 rem = tmp_res / 10;
                 res[0]++;
@@ -106,14 +108,15 @@ int *multiply(int *a, int *b) {
         }
         //print_long(res);
         if (rem) {
-            printf("Writing reminer %d\n", rem);
+            //printf("Writing reminer %d\n", rem);
             res[0]++;
             res[res[0]] = rem;
+            rem = 0;
         }
-        printf("End of first %d digit\n", i);
-        print_long(res);
+        //printf("End of first %d digit\n", i);
+        //print_long(res);
     }
-    print_long(res);
+    //print_long(res);
     return res;
 }
             
@@ -132,7 +135,7 @@ int main() {
     bl = init_long(b);
 
     res = multiply(al, bl);
-   
+    print_long(res); 
     if(al) free(al);
     if(bl) free(bl);
     if(res) free(res);
