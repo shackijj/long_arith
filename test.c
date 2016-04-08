@@ -4,12 +4,13 @@
 #include <stdlib.h>
 #include <limits.h>
 
-#define SIZE 1000
+#define SIZE 32000
+#define BASE 100000000000
 
-int *init_long(int from) {
+unsigned long long *init_long(int from) {
 
     int i;    
-    int *to = calloc(SIZE, sizeof(int));
+    unsigned long long *to = calloc(SIZE, sizeof( unsigned long long ));
     to[0] = 0;
 
     if (from == 0) {
@@ -27,7 +28,7 @@ int *init_long(int from) {
     return to;
 }
 
-void print_long( int *l ) {
+void print_long( unsigned long long  *l ) {
     //printf("Length is: %d\n", l[0]);
     int i;
     for(i = l[0]; i > 0; i--) {
@@ -37,34 +38,35 @@ void print_long( int *l ) {
 }
 
 
-int *add(int *a, int *b) {
-    int i, add_res, rem = 0;
-    int *res = calloc(SIZE, sizeof(int));
-    memcpy(res, a, (a[0] + 1) * sizeof(int));
+unsigned long long *add( unsigned long long  *a,  unsigned long long  *b) {
+    int i;
+    unsigned long long add_res, rem = 0;
+    unsigned long long  *res = calloc(SIZE, sizeof( unsigned long long ));
+    memcpy(res, a, (a[0] + 1) * sizeof( unsigned long long ));
 
     for(i = 1; rem || i <= b[0]; i++) {
         if (i <= res[0]) {
             add_res = res[i] + b[i] + rem;
             // printf("%d + %d + %d = %d\n", res[i], b[i], rem, add_res);
             
-            if (add_res > 9) {
-                rem = add_res / 10;
+            if (add_res > BASE- 1) {
+                rem = add_res / BASE;
             } else {
                 rem = 0;
             }
-            res[i] = add_res % 10;
+            res[i] = add_res % BASE;
             // printf("0 Added %d, rem %d to pos %d\n", add_res % 10,  rem, i);
 
         } else {
             if (rem) {
                 add_res = b[i] + rem;
-                if (add_res > 9) {
-                    rem = add_res / 10;
+                if (add_res > BASE - 1) {
+                    rem = add_res / BASE;
                 } else {
                     rem = 0;
                 }
                // printf("1 Added %d, rem %d to pos %d\n", add_res % 10,  rem, i);
-                res[i] = add_res % 10;
+                res[i] = add_res % BASE;
             } else {
                 //printf("1 Added %d, rem %d to pos %d\n", b[i],  rem, i);
                 res[i] = b[i];
@@ -78,9 +80,9 @@ int *add(int *a, int *b) {
     return res;
 }
 
-int *multiply(int *fm, int *sm) {
+unsigned long long *multiply( unsigned long long  *fm,  unsigned long long  *sm) {
 
-    int *a, *b;
+    unsigned long long  *a, *b;
     if (fm[0] < sm[0]) {
         a = fm;
         b = sm;
@@ -99,12 +101,12 @@ int *multiply(int *fm, int *sm) {
     print_long(b);
     */
 
-    int *res = init_long(0);
+    unsigned long long  *res = init_long(0);
     int i = 0,
-        tmp_mpl = 0,
-        rem = 0,
-        j = 0,
-        tmp_add;
+        j = 0;
+    unsigned long long tmp_mpl = 0,
+                       rem = 0,
+                       tmp_add;
 
     if (a[0] == 1 && a[1] == 0) return res;
     if (b[0] == 1 && b[1] == 0) return res;
@@ -113,26 +115,26 @@ int *multiply(int *fm, int *sm) {
         for( j = 1; j <= b[0]; j++ ) {
             tmp_mpl = a[i] * b[j] + rem;
            // printf(" %d x %d + %d = %d\n", a[i], b[j], rem, tmp_mpl);
-            if (tmp_mpl > 9) {
+            if (tmp_mpl > BASE - 1) {
              //   printf( "%d > 9, so reminder, %d\n", tmp_mpl, tmp_mpl / 10);
-                rem = tmp_mpl / 10;
+                rem = tmp_mpl / BASE;
             } else {
                 rem = 0;
             }
 
             if (res[i + j - 1]) {
-                tmp_add = res[i + j - 1] + (tmp_mpl % 10);
-                if (tmp_add > 9) {
-                    rem += tmp_add / 10;
+                tmp_add = res[i + j - 1] + (tmp_mpl % BASE);
+                if (tmp_add > BASE - 1) {
+                    rem += tmp_add / BASE;
                 }
              //   printf("1 Wrinting %d to position %d rem %d\n", tmp_add % 10, i + j - 1, rem);
-                res[i + j - 1] = tmp_add % 10;
+                res[i + j - 1] = tmp_add % BASE;
                 if(i + j - 1 > res[0]) res[0] = i + j - 1;
 
             } else {
                // printf("2 Wrinting %d to pos %d rem %d \n", tmp_mpl % 10, i + j - 1, rem);
                 if(i + j - 1 > res[0]) res[0] = i + j - 1;
-                res[i + j - 1] = tmp_mpl % 10;
+                res[i + j - 1] = tmp_mpl % BASE;
             }
         
         }
@@ -162,8 +164,8 @@ int main() {
 
     // First two members
     N -= 2;
-    int *al = init_long(A);
-    int *bl = init_long(B);
+    unsigned long long  *al = init_long(A);
+    unsigned long long *bl = init_long(B);
     /*
     int *tmpl = multiply(al, bl);
 
@@ -180,7 +182,7 @@ int main() {
     free(cl);
     */
     
-    int *cl, *tmpl;
+    unsigned long long  *cl, *tmpl;
     
     //printf("al: ");
     //print_long(al);
