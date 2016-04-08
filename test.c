@@ -3,6 +3,7 @@
 #include <math.h>
 #include <stdlib.h>
 #include <limits.h>
+
 #define SIZE 50
 
 int *init_long(int from) {
@@ -27,7 +28,7 @@ int *init_long(int from) {
 }
 
 void print_long( int *l ) {
-    printf("Length is: %d\n", l[0]);
+    //printf("Length is: %d\n", l[0]);
     int i;
     for(i = l[0]; i > 0; i--) {
         printf("%d", l[i]);
@@ -44,13 +45,15 @@ int *add(int *a, int *b) {
     for(i = 1; i <= b[0]; i++) {
         if (i <= res[0]) {
             add_res = res[i] + b[i] + rem;
+            printf("%d + %d + %d = %d\n", res[i], b[i], rem, add_res);
+            
             if (add_res > 9) {
                 rem += add_res / 10;
             } else {
                 rem = 0;
             }
             res[i] = add_res % 10;
-            // pintf("Added %d, rem %d\n", add_res % 10,  rem);
+            printf("0 Added %d, rem %d to pos %d\n", add_res % 10,  rem, i);
 
         } else {
             if (rem) {
@@ -60,8 +63,10 @@ int *add(int *a, int *b) {
                 } else {
                     rem = 0;
                 }
+                printf("1 Added %d, rem %d to pos %d\n", add_res % 10,  rem, i);
                 res[i] = add_res % 10;
             } else {
+                printf("1 Added %d, rem %d to pos %d\n", b[i],  rem, i);
                 res[i] = b[i];
             }
             res[0]++;
@@ -69,8 +74,17 @@ int *add(int *a, int *b) {
     } 
     
     if (rem) {
-        res[0]++;
-        res[res[0]] = rem;
+        //res[0]++;
+        printf("reminder %d added to pos %d\n", rem, res[0]);
+        add_res = res[res[0]] + rem;
+        if (add_res > 9) {
+            rem = add_res / 10;
+            res[res[0]] = add_res % 10;
+            res[0]++;
+            res[res[0]] = rem;
+        } else {
+            res[res[0]] = add_res;
+        }        
     }
     
     return res;
@@ -90,11 +104,12 @@ int *multiply(int *fm, int *sm) {
         b = sm;
     }
 
-
+    /*
     printf("a: \n");
     print_long(a);
     printf("b: \n");
     print_long(b);
+    */
 
     int *res = init_long(0);
     int i = 0,
@@ -111,13 +126,16 @@ int *multiply(int *fm, int *sm) {
             tmp_mpl = a[i] * b[j] + rem;
             printf(" %d x %d + %d = %d\n", a[i], b[j], rem, tmp_mpl);
             if (tmp_mpl > 9) {
+                printf( "%d > 9, so reminder, %d\n", tmp_mpl, tmp_mpl / 10);
                 rem = tmp_mpl / 10;
+            } else {
+                rem = 0;
             }
 
             if (res[i + j - 1]) {
                 tmp_add = res[i + j - 1] + (tmp_mpl % 10);
                 if (tmp_add > 9) {
-                    rem = tmp_add / 10;
+                    rem += tmp_add / 10;
                 }
                 printf("1 Wrinting %d to position %d rem %d\n", tmp_add % 10, i + j - 1, rem);
                 res[i + j - 1] = tmp_add % 10;
@@ -141,7 +159,7 @@ int *multiply(int *fm, int *sm) {
         print_long(res);
     }
     printf("Exiting\n");
-    //print_long(res);
+    print_long(res);
     return res;
 }
 
@@ -158,26 +176,43 @@ int main() {
     N -= 2;
     int *al = init_long(A);
     int *bl = init_long(B);
+    /*
     int *tmpl = multiply(al, bl);
+
     printf("Mulit res: ");
     print_long(tmpl);
+    */
+    int *cl = add(al, bl);
+    printf("Add res: ");
+    print_long(cl);
+    
+    free(al);
+    free(bl);
+    //free(tmpl);
+    free(cl);
     /*
+    
     int *cl, *tmpl;
     
-    printf("al: ");
-    print_long(al);
-    printf("bl: ");
-    print_long(bl);
+    //printf("al: ");
+    //print_long(al);
+    //printf("bl: ");
+    //print_long(bl);
 
     while (N--) {
         
         tmpl = multiply(bl, bl);
-        printf("tmpl: ");
-        print_long(tmpl);
+        //printf("tmpl: ");
+        //print_long(tmpl);
 
         cl = add(tmpl, al);
+
+        free(tmpl);
+        free(al);
+
         al = bl;
         bl = cl;
+         
         printf("tmpl: ");
         print_long(tmpl);
 
@@ -189,15 +224,16 @@ int main() {
 
         printf("bl: ");
         print_long(bl);
-        break;
+        
     }
 
-    print_long(cl);
+    //printf("Out of loop\n");
+    print_long(bl);
 
     if (al) free(al);
     if (bl) free(bl);
-    if (cl) free(cl);
-    if (tmpl) free(tmpl); 
+    //if (cl) free(cl);
+    // if (tmpl) free(tmpl); 
     */
     return 0;
 }
