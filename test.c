@@ -4,7 +4,7 @@
 #include <stdlib.h>
 #include <limits.h>
 
-#define SIZE 50
+#define SIZE 1000
 
 int *init_long(int from) {
 
@@ -41,19 +41,19 @@ int *add(int *a, int *b) {
     int i, add_res, rem = 0;
     int *res = calloc(SIZE, sizeof(int));
     memcpy(res, a, (a[0] + 1) * sizeof(int));
-   
-    for(i = 1; i <= b[0]; i++) {
+
+    for(i = 1; rem || i <= b[0]; i++) {
         if (i <= res[0]) {
             add_res = res[i] + b[i] + rem;
-            printf("%d + %d + %d = %d\n", res[i], b[i], rem, add_res);
+            // printf("%d + %d + %d = %d\n", res[i], b[i], rem, add_res);
             
             if (add_res > 9) {
-                rem += add_res / 10;
+                rem = add_res / 10;
             } else {
                 rem = 0;
             }
             res[i] = add_res % 10;
-            printf("0 Added %d, rem %d to pos %d\n", add_res % 10,  rem, i);
+            // printf("0 Added %d, rem %d to pos %d\n", add_res % 10,  rem, i);
 
         } else {
             if (rem) {
@@ -63,29 +63,17 @@ int *add(int *a, int *b) {
                 } else {
                     rem = 0;
                 }
-                printf("1 Added %d, rem %d to pos %d\n", add_res % 10,  rem, i);
+               // printf("1 Added %d, rem %d to pos %d\n", add_res % 10,  rem, i);
                 res[i] = add_res % 10;
             } else {
-                printf("1 Added %d, rem %d to pos %d\n", b[i],  rem, i);
+                //printf("1 Added %d, rem %d to pos %d\n", b[i],  rem, i);
                 res[i] = b[i];
             }
             res[0]++;
         }
-    } 
-    
-    if (rem) {
-        //res[0]++;
-        printf("reminder %d added to pos %d\n", rem, res[0]);
-        add_res = res[res[0]] + rem;
-        if (add_res > 9) {
-            rem = add_res / 10;
-            res[res[0]] = add_res % 10;
-            res[0]++;
-            res[res[0]] = rem;
-        } else {
-            res[res[0]] = add_res;
-        }        
     }
+
+
     
     return res;
 }
@@ -124,9 +112,9 @@ int *multiply(int *fm, int *sm) {
     for(i = 1; i <= a[0]; i++) {
         for( j = 1; j <= b[0]; j++ ) {
             tmp_mpl = a[i] * b[j] + rem;
-            printf(" %d x %d + %d = %d\n", a[i], b[j], rem, tmp_mpl);
+           // printf(" %d x %d + %d = %d\n", a[i], b[j], rem, tmp_mpl);
             if (tmp_mpl > 9) {
-                printf( "%d > 9, so reminder, %d\n", tmp_mpl, tmp_mpl / 10);
+             //   printf( "%d > 9, so reminder, %d\n", tmp_mpl, tmp_mpl / 10);
                 rem = tmp_mpl / 10;
             } else {
                 rem = 0;
@@ -137,12 +125,12 @@ int *multiply(int *fm, int *sm) {
                 if (tmp_add > 9) {
                     rem += tmp_add / 10;
                 }
-                printf("1 Wrinting %d to position %d rem %d\n", tmp_add % 10, i + j - 1, rem);
+             //   printf("1 Wrinting %d to position %d rem %d\n", tmp_add % 10, i + j - 1, rem);
                 res[i + j - 1] = tmp_add % 10;
                 if(i + j - 1 > res[0]) res[0] = i + j - 1;
 
             } else {
-                printf("2 Wrinting %d to pos %d rem %d \n", tmp_mpl % 10, i + j - 1, rem);
+               // printf("2 Wrinting %d to pos %d rem %d \n", tmp_mpl % 10, i + j - 1, rem);
                 if(i + j - 1 > res[0]) res[0] = i + j - 1;
                 res[i + j - 1] = tmp_mpl % 10;
             }
@@ -150,16 +138,16 @@ int *multiply(int *fm, int *sm) {
         }
         if (rem) {
            res[0]++;
-           printf("Writing reminder %d to pos %d\n", rem, res[0]);
+           //printf("Writing reminder %d to pos %d\n", rem, res[0]);
            res[res[0]] = rem;
            rem = 0;
         }
     
-        printf("End of digit: \n");
-        print_long(res);
+        //printf("End of digit: \n");
+        //print_long(res);
     }
-    printf("Exiting\n");
-    print_long(res);
+    //printf("Exiting\n");
+    //print_long(res);
     return res;
 }
 
@@ -170,7 +158,7 @@ int main() {
     int A, B, N;
     scanf("%d", &A);
     scanf("%d", &B);
-    //scanf("%d", &N);
+    scanf("%d", &N);
 
     // First two members
     N -= 2;
@@ -181,7 +169,7 @@ int main() {
 
     printf("Mulit res: ");
     print_long(tmpl);
-    */
+   
     int *cl = add(al, bl);
     printf("Add res: ");
     print_long(cl);
@@ -190,7 +178,7 @@ int main() {
     free(bl);
     //free(tmpl);
     free(cl);
-    /*
+    */
     
     int *cl, *tmpl;
     
@@ -212,7 +200,7 @@ int main() {
 
         al = bl;
         bl = cl;
-         
+        /*        
         printf("tmpl: ");
         print_long(tmpl);
 
@@ -224,7 +212,7 @@ int main() {
 
         printf("bl: ");
         print_long(bl);
-        
+        */
     }
 
     //printf("Out of loop\n");
@@ -234,6 +222,6 @@ int main() {
     if (bl) free(bl);
     //if (cl) free(cl);
     // if (tmpl) free(tmpl); 
-    */
+
     return 0;
 }
