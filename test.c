@@ -5,7 +5,7 @@
 #include <limits.h>
 
 #define SIZE 32000
-#define BASE 100000000000
+#define BASE 10000000
 
 unsigned long long *init_long(int from) {
 
@@ -20,9 +20,9 @@ unsigned long long *init_long(int from) {
     }
 
     for(i = 1; from > 0; i++) {
-        to[i] = from % 10;
+        to[i] = from % BASE;
         to[0]++;
-        from = from / 10;
+        from = from / BASE;
     }
 
     return to;
@@ -30,45 +30,61 @@ unsigned long long *init_long(int from) {
 
 void print_long( unsigned long long  *l ) {
     //printf("Length is: %d\n", l[0]);
-    int i;
+    int i, j;
+    unsigned long long t, res = 0;
+
     for(i = l[0]; i > 0; i--) {
-        printf("%d", l[i]);
+        /*
+        t = l[i];
+
+        j = 0;
+        while(t > 0) {
+            j++;
+            t = t / 10;
+        }
+        res += j;
+        */
+        if (i == l[0]) {
+            printf("%llu", l[i]);
+        } else {
+            printf("%07llu", l[i]);
+        }
     }
     printf("\n");
+    // printf("Digits: %d\n", res);
 }
-
 
 unsigned long long *add( unsigned long long  *a,  unsigned long long  *b) {
     int i;
-    unsigned long long add_res, rem = 0;
+    unsigned long long add_res, rem = 0, shift = 1;
     unsigned long long  *res = calloc(SIZE, sizeof( unsigned long long ));
     memcpy(res, a, (a[0] + 1) * sizeof( unsigned long long ));
 
     for(i = 1; rem || i <= b[0]; i++) {
         if (i <= res[0]) {
-            add_res = res[i] + b[i] + rem;
-            // printf("%d + %d + %d = %d\n", res[i], b[i], rem, add_res);
+            add_res = (res[i] + b[i] + rem) * shift;
+            // printf("%llu + %llu + %llu = %llu\n", res[i], b[i], rem, add_res);
             
-            if (add_res > BASE- 1) {
+            if (add_res > BASE - 1) {
                 rem = add_res / BASE;
             } else {
                 rem = 0;
             }
             res[i] = add_res % BASE;
-            // printf("0 Added %d, rem %d to pos %d\n", add_res % 10,  rem, i);
+            // printf("0 Added %llu, rem %llu to pos %d\n", add_res % BASE,  rem, i);
 
         } else {
             if (rem) {
                 add_res = b[i] + rem;
-                if (add_res > BASE - 1) {
+                if (add_res > BASE ) {
                     rem = add_res / BASE;
                 } else {
                     rem = 0;
                 }
-               // printf("1 Added %d, rem %d to pos %d\n", add_res % 10,  rem, i);
+                // printf("1 Added %llu, rem %llu to pos %d\n", add_res % BASE,  rem, i);
                 res[i] = add_res % BASE;
             } else {
-                //printf("1 Added %d, rem %d to pos %d\n", b[i],  rem, i);
+                // printf("2 Added %llu, rem %llu to pos %d\n", b[i],  rem, i);
                 res[i] = b[i];
             }
             res[0]++;
@@ -164,15 +180,17 @@ int main() {
 
     // First two members
     N -= 2;
-    unsigned long long  *al = init_long(A);
+    unsigned long long *al = init_long(A);
     unsigned long long *bl = init_long(B);
-    /*
-    int *tmpl = multiply(al, bl);
 
-    printf("Mulit res: ");
+    /*
+    unsigned long long *tmpl = multiply(al, bl);
+
+    //printf("Mulit res: ");
     print_long(tmpl);
-   
-    int *cl = add(al, bl);
+    
+    
+    unsigned long long *cl = add(al, bl);
     printf("Add res: ");
     print_long(cl);
     
@@ -180,8 +198,8 @@ int main() {
     free(bl);
     //free(tmpl);
     free(cl);
-    */
     
+    */
     unsigned long long  *cl, *tmpl;
     
     //printf("al: ");
@@ -202,7 +220,8 @@ int main() {
 
         al = bl;
         bl = cl;
-        /*        
+          
+        /*
         printf("tmpl: ");
         print_long(tmpl);
 
@@ -214,7 +233,7 @@ int main() {
 
         printf("bl: ");
         print_long(bl);
-        */
+        */   
     }
 
     //printf("Out of loop\n");
@@ -224,6 +243,6 @@ int main() {
     if (bl) free(bl);
     //if (cl) free(cl);
     // if (tmpl) free(tmpl); 
-
+    
     return 0;
 }
